@@ -65,7 +65,7 @@ Assignment 2 on Extended Finite State Machines}
 \indent 5. $brake \xrightarrow {\text { accelerate signal / accelerate}} manual$\\
 
 \section{Cruise}
-\subsection{Cruise - Maintaining desired speed}
+\subsection{Maintaining desired speed}
 
 \noindent The EFSM of the cruise (maintaining desired speed) ( is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
@@ -86,7 +86,7 @@ Assignment 2 on Extended Finite State Machines}
 \noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
 \newpage
 
-\subsection{Cruise - Avoiding obstacles}
+\subsection{Avoiding obstacles}
 
 \noindent The EFSM of the cruise (avoiding obstacles) ( is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
@@ -129,7 +129,7 @@ Assignment 2 on Extended Finite State Machines}
 \indent 10. $destination~ahead \xrightarrow {\text { verify~intersection [isDestination~is~true] / stop}} destination~arrived$\\
 \indent 11. $turning \xrightarrow {\text { verify~turn~done [isTurnDone~is~true] / go straight}} cruising$\\
 
-\subsection{Cruise - Changing Lane}
+\subsection{Changing Lane}
 
 \noindent $Q = \{Cruising, ChangingLane, Panic\}$\\
 \noindent $\Sigma_1 = \{MoveLeftSignal, MoveRightSignal, MoveLeft, MoveRight, DangerDetection\}$\\
