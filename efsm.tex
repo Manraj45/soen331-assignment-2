@@ -18,6 +18,35 @@ Assignment 2 on Extended Finite State Machines}
 \begin{spacing}{1.5}
 
 \maketitle
+\newpage
+\section{Driverless Car formal specification}
+
+\noindent The EFSM of the driverless car is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
+
+\noindent $Q = \{parked, manual,cruise,panic,system idle\}$\\
+\noindent $\Sigma_1 = \{manual ~signal, cruise~ signal, park~signal, unforeseen~event, shut~off~ engine, 
+\newline start ~system,  check~ destination\}$\\
+\noindent $\Sigma_2 = \{system ~activated/engine~ idle, beep,  hazard~ signal~turned ~on, hazard~ off
+\}$\\
+\noindent $q_0: parked$\\
+\noindent $V: isDestinationSet= \{true,false\}, isEngineIdle= \{true,false\}, isCarStopped = \{true,false\},isDriving = \{true, false\}, hasArrivedToDestination = \{true, false\}$\\
+\noindent $\Lambda$: Transition specifications\\
+
+\indent 1. $\rightarrow system~idle$\\
+\indent 2. $system~idle \xrightarrow {\text { start system [isEngineIdle is true]}} parked$\\
+\indent 3. $ parked\xrightarrow {\text { manual ~signal }} manual$\\
+\indent 4. $ parked\xrightarrow {\text { cruise ~signal [isDestinationSet is true] }} cruise$\\
+\indent 5. $ parked\xrightarrow {\text { cruise ~signal [isDestinationSet is false] }} parked$\\
+\indent 6. $ manual\xrightarrow {\text { cruise ~signal [isDriving is true;isDestinationSet is true] }} manual$\\
+\indent 7. $ cruise\xrightarrow {\text { manual ~signal [isDriving true;isDestinationSet is true] }} cruise$\\
+\indent 8. $ manual\xrightarrow {\text { park ~signal [isCarStopped is true] }} parked$\\
+\indent 9. $ parked\xrightarrow {\text { unforeseen ~event/hazard~signal~turned~on}} panic$\\
+\indent 10. $ cruise\xrightarrow {\text {check~destination[hasArrivedToDestination is true]/engine ~idle}} parked$\\
+\indent 11. $ panic \xrightarrow {\text { parked~ signal/hazard~off}} parked$\\
+\indent 12. $ cruise\xrightarrow {\text { manual~ signal}} manual$\\
+\indent 13. $ parked\xrightarrow {\text { shut~off~engine}} system~idle$\\
+
+\newpage
 
 \subsection{Manual mode}
 
@@ -34,6 +63,49 @@ Assignment 2 on Extended Finite State Machines}
 \indent 3. $manual \xrightarrow {\text { decelerate signal / decelerate}} manual$\\
 \indent 4. $manual \xrightarrow {\text { brake signal / speed = 0}} brake$\\
 \indent 5. $brake \xrightarrow {\text { accelerate signal / accelerate}} manual$\\
+
+\section{Cruise}
+\subsection{Cruise - Maintaining desired speed}
+
+\noindent The EFSM of the cruise (maintaining desired speed) ( is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
+
+\noindent $Q = \{accelerating,~decelerating,~optimal~speed,~initial speed,~optimal~speed\}$\\
+\noindent $\Sigma_1 = \{accelerate~signal,~decelerate~signal,~ verify~current\}$\\
+\noindent $\Sigma_2 = \{accelerate,~decelerate,~maintain~current~speed\}$\\
+\noindent $q_0: initial~speed$\\
+\noindent $V: default~speed: \mathbb R, current~speed: \mathbb R$\\
+\noindent $\Lambda$: Transition specifications\\
+\indent 1. $\rightarrow initial~speed$\\
+\indent 2. $initial~speed \xrightarrow {\text { accelerate signal [current speed < default speed - 5\% of default speed]}~/ ~accelerate} accelerating$\\
+\indent 3. $initial~speed \xrightarrow {\text { decelerate signal [current speed > default speed + 5\% of default speed]}~/ ~decelerate} decelerating$\\
+\indent 4. $initial~speed \xrightarrow {\text { verify current speed [default speed - 5\% of default speed < current speed < default speed + 5\% of default speed}~/~maintain~current~speed} optimal speed$\\
+\indent 5. $accelerate \xrightarrow {\text { verify current speed [default speed - 5\% of default speed < default speed + 5\% of default speed}~/~maintain~current~speed} optimal speed$\\
+\indent 6. $decelerate \xrightarrow {\text { verify current speed [default speed - 5\% of default speed < default speed + 5\% of default speed}~/~maintain~current~speed} optimal speed$\\
+
+
+\noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
+\newpage
+
+\subsection{Cruise - Avoiding obstacles}
+
+\noindent The EFSM of the cruise (avoiding obstacles) ( is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
+
+\noindent $Q = \{cruising,~changing~lane,~tailing\}$\\
+\noindent $\Sigma_1 = \{verify~distance~from~obstacle\}$\\
+\noindent $\Sigma_2 = \{maintain~speed,~reduce~speed,~change one lane to the left\}$\\
+\noindent $q_0: cruising$\\
+\noindent $V: threshold~limit: \mathbb R,~distanceFromObstacle:~ \mathbb R,~isObstacledDetected=~\{true, false\},\newline~isObstacleMoving=~\{true,false\},~isSafeDistanceMaintained=~\{true,false\}$\\
+\noindent $\Lambda$: Transition specifications\\
+\indent 1. $\rightarrow cruising$\\
+\indent 2. $cruising \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle > threshold limit}~/ ~maintain speed} cruising$\\
+\indent 3. $cruising \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle < threshold limit}~/ ~reduce speed} tailing$\\
+\indent 4. $tailing \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle > threshold limit}~/ ~maintain speed} cruising$\\
+\indent 5. $cruising \xrightarrow {\text { change lane signal [isSafeDistanceMaintained = false or isObstacleMoving = false}~/ ~change one lane to the left} changing lane$\\
+
+
+\noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
+
+\newpage
 
 \subsection{Navigation mode}
 
@@ -57,15 +129,52 @@ Assignment 2 on Extended Finite State Machines}
 \indent 10. $destination~ahead \xrightarrow {\text { verify~intersection [isDestination~is~true] / stop}} destination~arrived$\\
 \indent 11. $turning \xrightarrow {\text { verify~turn~done [isTurnDone~is~true] / go straight}} cruising$\\
 
-\noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
+\subsection{Cruise - Changing Lane}
+
+\noindent $Q = \{Cruising, ChangingLane, Panic\}$\\
+\noindent $\Sigma_1 = \{MoveLeftSignal, MoveRightSignal, MoveLeft, MoveRight, DangerDetection\}$\\
+\noindent $\Sigma_2 = \{ChangeLane, StayInLane, PanicOn\}$\\
+\noindent $q_0: Cruising$\\
+\noindent $V: Lane = \{Target, NotTarget\}, $ LeftLaneAvailable  = \{Open, NotOpen\}, $ RightLaneAvailable  = \{Open, NotOpen\}, $ LaneLocation  = \{Left, Right\}, $ ObstacleAhead  = \{True, False\}$\\
+\noindent $\Lambda$: Transition specifications\\
+
+\indent 1. $\rightarrow Cruising$\\
+\indent 2. $Cruising \xrightarrow {\text {MoveLeftSignal [LaneLocation is Left]}} ChangeLane$\\
+\indent 3. $ChangeLane \xrightarrow {\text {MoveLeft [Lane is NotTarget; LeftLaneAvailable is Open] / ChangeLane}} ChangeLane$\\
+\indent 4. $ChangeLane \xrightarrow {\text {MoveLeft [Lane is Target; LeftLaneAvailable is Open] / ChangeLane}} Cruising$\\
+\indent 5. $ChangeLane \xrightarrow {\text {MoveLeft [LeftLaneAvailable  is NotOpen] / StayInLane}} ChangeLane$\\
+\indent 6. $Cruising \xrightarrow {\text { MoveRightSignal [LaneLocation is Right]}} ChangeLane$\\
+\indent 7. $ChangeLane \xrightarrow {\text {MoveRight [Lane is NotTarget; RightLaneAvailable is Open] / ChangeLane}} ChangeLane$\\
+\indent 8. $ChangeLane \xrightarrow {\text {MoveRight [Lane is Target; RightLaneAvailable is Open] / ChangeLane}} Cruising$\\
+\indent 9. $ChangeLane \xrightarrow {\text {MoveRight [RightLaneAvailable is NotOpen] / StayInLane}} ChangeLane$\\
+\indent 10. $Cruising \xrightarrow {\text {DangerDetection [LeftLaneAvailable is NotOpen; RightLaneAvailable is NotOpen; ObstacleAhead is True] / (PanicModeOn)}} Panic$\\
+
 
 \newpage
 
+\section{Panic}
+
+\noindent $Q = \{Default, Panic, Parked\}$\\
+\noindent $\Sigma_1 = \{Panic Signal, UnknownIssueSignal\}$\\
+\noindent $\Sigma_2 = \{hazard signal turned on, break, hazard signal turned off\}$\\
+\noindent $q_0: Default$\\
+\noindent $V: UnsolvableIssue = \{True, False\}, $ PanicState = \{True, False\}\\
+\noindent $\Lambda$: Transition specifications\\
+
+\indent 1. $\rightarrow Default$\\
+\indent 2. $Default \xrightarrow {\text {UnknownIssueSignal [UnsolvableIssue is True] / (break; hazard signal turned on)}} Panic$\\
+\indent 3. $Default \xrightarrow {\text {Panic Signal}} Panic$\\
+\indent 4. $Panic \xrightarrow {\text {Panic Signal [PanicState is True] /(hazard signal turned off)}} Parked$\\
+
+
+\noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
+
+\newpage
 \section{UML state diagrams}
 
 \begin{figure}[h!]
 	\centering
-		\includegraphics[width=0.8\textwidth]{./figures/eps/metro.eps}
+		
 		  \caption{Metro.}
   \label{fig:metro-fig}
 \end{figure}
