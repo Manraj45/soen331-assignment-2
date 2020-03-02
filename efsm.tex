@@ -33,44 +33,6 @@ Assignment 2 on Extended Finite State Machines}
 \indent 2. $locked \xrightarrow {\text { request entry [ticket is valid] / (unlock ; beep)}} unlocked$\\
 \indent 3. $unlocked \xrightarrow {\text { pass / lock}} locked$\\
 
-
-\subsubsection{4.3.4 Cruise Mode - Changing Lane}
-
-\noindent $Q = \{Cruising, ChangingLane, Panic\}$\\
-\noindent $\Sigma_1 = \{MoveLeftSignal, MoveRightSignal, MoveLeft, MoveRight, DangerDetection\}$\\
-\noindent $\Sigma_2 = \{ChangeLane, StayInLane, PanicOn\}$\\
-\noindent $q_0: Cruising$\\
-\noindent $V: Lane = \{Target, NotTarget\}, $ LeftLaneAvailable  = \{Open, NotOpen\}, $ RightLaneAvailable  = \{Open, NotOpen\}, $ LaneLocation  = \{Left, Right\}, $ ObstacleAhead  = \{True, False\}$\\
-\noindent $\Lambda$: Transition specifications\\
-
-\indent 1. $\rightarrow Cruising$\\
-\indent 2. $Cruising \xrightarrow {\text {MoveLeftSignal [LaneLocation is Left]}} ChangeLane$\\
-\indent 3. $ChangeLane \xrightarrow {\text {MoveLeft [Lane is NotTarget; LeftLaneAvailable is Open] / ChangeLane}} ChangeLane$\\
-\indent 4. $ChangeLane \xrightarrow {\text {MoveLeft [Lane is Target; LeftLaneAvailable is Open] / ChangeLane}} Cruising$\\
-\indent 5. $ChangeLane \xrightarrow {\text {MoveLeft [LeftLaneAvailable  is NotOpen] / StayInLane}} ChangeLane$\\
-\indent 6. $Cruising \xrightarrow {\text { MoveRightSignal [LaneLocation is Right]}} ChangeLane$\\
-\indent 7. $ChangeLane \xrightarrow {\text {MoveRight [Lane is NotTarget; RightLaneAvailable is Open] / ChangeLane}} ChangeLane$\\
-\indent 8. $ChangeLane \xrightarrow {\text {MoveRight [Lane is Target; RightLaneAvailable is Open] / ChangeLane}} Cruising$\\
-\indent 9. $ChangeLane \xrightarrow {\text {MoveRight [RightLaneAvailable is NotOpen] / StayInLane}} ChangeLane$\\
-\indent 10. $Cruising \xrightarrow {\text {DangerDetection [LeftLaneAvailable is NotOpen; RightLaneAvailable is NotOpen; ObstacleAhead is True] / (PanicModeOn)}} Panic$\\
-
-
-
-\subsection{4.4 Panic}
-
-\noindent $Q = \{Default, Panic, Parked\}$\\
-\noindent $\Sigma_1 = \{Panic Signal, UnknownIssueSignal\}$\\
-\noindent $\Sigma_2 = \{hazard signal turned on, break, hazard signal turned off\}$\\
-\noindent $q_0: Default$\\
-\noindent $V: UnsolvableIssue = \{True, False\}, $ PanicState = \{True, False\}\\
-\noindent $\Lambda$: Transition specifications\\
-
-\indent 1. $\rightarrow Default$\\
-\indent 2. $Default \xrightarrow {\text {UnknownIssueSignal [UnsolvableIssue is True] / (break; hazard signal turned on)}} Panic$\\
-\indent 3. $Default \xrightarrow {\text {Panic Signal}} Panic$\\
-\indent 4. $Panic \xrightarrow {\text {Panic Signal [PanicState is True] /(hazard signal turned off)}} Parked$\\
-
-
 \noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
 
 \newpage
@@ -103,15 +65,16 @@ Assignment 2 on Extended Finite State Machines}
 
 \noindent $Q = \{cruising,~changing~lane,~tailing\}$\\
 \noindent $\Sigma_1 = \{verify~distance~from~obstacle\}$\\
-\noindent $\Sigma_2 = \{maintain~speed,~reduce~speed,~change one lane to the left\}$\\
+\noindent $\Sigma_2 = \{maintain~speed,~reduce~speed,~change~one lane~to~the~left\}$\\
 \noindent $q_0: cruising$\\
-\noindent $V: threshold~limit: \mathbb R,~distanceFromObstacle:~ \mathbb R,~isObstacledDetected=~\{true, false\},\newline~isObstacleMoving=~\{true,false\},~isSafeDistanceMaintained=~\{true,false\}$\\
+\noindent $V: threshold~limit: \mathbb R,~distanceFromObstacle:~ \mathbb R,~isObstacledDetected=~\{true, false\},\newline~isObstacleMoving=~\{true,false\},~isSafeDistanceMaintained=~\{true,false\},~isChangingLaneDone=~\{true,false\}$\\
 \noindent $\Lambda$: Transition specifications\\
 \indent 1. $\rightarrow cruising$\\
 \indent 2. $cruising \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle > threshold limit}~/ ~maintain speed} cruising$\\
 \indent 3. $cruising \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle < threshold limit}~/ ~reduce speed} tailing$\\
 \indent 4. $tailing \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle > threshold limit}~/ ~maintain speed} cruising$\\
 \indent 5. $cruising \xrightarrow {\text { change lane signal [isSafeDistanceMaintained = false or isObstacleMoving = false}~/ ~change one lane to the left} changing lane$\\
+\indent 6. $changingLane \xrightarrow {\text { change lane signal [isSafeDistanceMaintained = false or isObstacleMoving = false}~/ ~change one lane to the left} changing lane$\\
 
 
 \noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
