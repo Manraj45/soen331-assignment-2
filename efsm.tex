@@ -18,21 +18,32 @@ Assignment 2 on Extended Finite State Machines}
 \begin{spacing}{1.5}
 
 \maketitle
+\newpage
+\section{Driverless Car formal specification}
 
-\section{Metro passageway formal specification}
+\noindent The EFSM of the driverless car is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
-\noindent The EFSM of the metro passageway is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
-
-\noindent $Q = \{locked, unlocked\}$\\
-\noindent $\Sigma_1 = \{request~entry, pass\}$\\
-\noindent $\Sigma_2 = \{lock, unlock, beep\}$\\
-\noindent $q_0: locked$\\
-\noindent $V: ticket = \{valid, invalid\}$\\
+\noindent $Q = \{parked, manual,cruise,panic,system idle\}$\\
+\noindent $\Sigma_1 = \{manual ~signal, cruise~ signal, park~signal, unforeseen~event, shut~off~ engine, 
+\newline start ~system,  check~ destination\}$\\
+\noindent $\Sigma_2 = \{system ~activated/engine~ idle, beep,  hazard~ signal~turned ~on, hazard~ off
+\}$\\
+\noindent $q_0: parked$\\
+\noindent $V: isDestinationSet= \{true,false\}, isEngineIdle= \{true,false\}, isCarStopped = \{true,false\},isDriving = \{true, false\}, hasArrivedToDestination = \{true, false\}$\\
 \noindent $\Lambda$: Transition specifications\\
-\indent 1. $\rightarrow locked$\\
-\indent 2. $locked \xrightarrow {\text { request entry [ticket is valid] / (unlock ; beep)}} unlocked$\\
-\indent 3. $unlocked \xrightarrow {\text { pass / lock}} locked$\\
-
+\indent 1. $\rightarrow system~idle$\\
+\indent 2. $system~idle \xrightarrow {\text { start system [isEngineIdle is true]}} parked$\\
+\indent 3. $ parked\xrightarrow {\text { manual ~signal }} manual$\\
+\indent 4. $ parked\xrightarrow {\text { cruise ~signal [isDestinationSet is true] }} cruise$\\
+\indent 5. $ parked\xrightarrow {\text { cruise ~signal [isDestinationSet is false] }} parked$\\
+\indent 6. $ manual\xrightarrow {\text { cruise ~signal [isDriving is true;isDestinationSet is true] }} manual$\\
+\indent 7. $ cruise\xrightarrow {\text { manual ~signal [isDriving true;isDestinationSet is true] }} cruise$\\
+\indent 8. $ manual\xrightarrow {\text { park ~signal [isCarStopped is true] }} parked$\\
+\indent 9. $ parked\xrightarrow {\text { unforeseen ~event/hazard~signal~turned~on}} panic$\\
+\indent 10. $ cruise\xrightarrow {\text {check~destination[hasArrivedToDestination is true]/engine ~idle}} parked$\\
+\indent 11. $ panic \xrightarrow {\text { parked~ signal/hazard~off}} parked$\\
+\indent 12. $ cruise\xrightarrow {\text { manual~ signal}} manual$\\
+\indent 13. $ parked\xrightarrow {\text { shut~off~engine}} system~idle$\\
 \noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
 
 \newpage
@@ -41,7 +52,7 @@ Assignment 2 on Extended Finite State Machines}
 
 \begin{figure}[h!]
 	\centering
-		\includegraphics[width=0.8\textwidth]{./figures/eps/metro.eps}
+		
 		  \caption{Metro.}
   \label{fig:metro-fig}
 \end{figure}
