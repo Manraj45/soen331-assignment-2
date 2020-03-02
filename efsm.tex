@@ -18,27 +18,60 @@ Assignment 2 on Extended Finite State Machines}
 \begin{spacing}{1.5}
 
 \maketitle
+\newpage
+\section{Driverless Car formal specification}
+\noindent The EFSM of the driverless car is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
-\section{Metro passageway formal specification}
-
-\noindent The EFSM of the metro passageway is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
-
-\noindent $Q = \{locked, unlocked\}$\\
-\noindent $\Sigma_1 = \{request~entry, pass\}$\\
-\noindent $\Sigma_2 = \{lock, unlock, beep\}$\\
-\noindent $q_0: locked$\\
-\noindent $V: ticket = \{valid, invalid\}$\\
+\noindent $Q = \{parked, manual,cruise,panic,system idle\}$\\
+\noindent $\Sigma_1 = \{manual ~signal, cruise~ signal, park~signal, unforeseen~event, shut~off~ engine, 
+\newline start ~system,  check~ destination\}$\\
+\noindent $\Sigma_2 = \{system ~activated/engine~ idle, beep,  hazard~ signal~turned ~on, hazard~ off
+\}$\\
+\noindent $q_0: parked$\\
+\noindent $V: isDestinationSet= \{true,false\}, isEngineIdle= \{true,false\}, isCarStopped = \{true,false\},isDriving = \{true, false\}, hasArrivedToDestination = \{true, false\}$\\
 \noindent $\Lambda$: Transition specifications\\
-\indent 1. $\rightarrow locked$\\
-\indent 2. $locked \xrightarrow {\text { request entry [ticket is valid] / (unlock ; beep)}} unlocked$\\
-\indent 3. $unlocked \xrightarrow {\text { pass / lock}} locked$\\
 
-\noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
+\indent 1. $\rightarrow system~idle$\\
+\indent 2. $system~idle \xrightarrow {\text { start system [isEngineIdle is true]}} parked$\\
+\indent 3. $ parked\xrightarrow {\text { manual ~signal }} manual$\\
+\indent 4. $ parked\xrightarrow {\text { cruise ~signal [isDestinationSet is true] }} cruise$\\
+\indent 5. $ parked\xrightarrow {\text { cruise ~signal [isDestinationSet is false] }} parked$\\
+\indent 6. $ manual\xrightarrow {\text { cruise ~signal [isDriving is true;isDestinationSet is true] }} manual$\\
+\indent 7. $ cruise\xrightarrow {\text { manual ~signal [isDriving true;isDestinationSet is true] }} cruise$\\
+\indent 8. $ manual\xrightarrow {\text { park ~signal [isCarStopped is true] }} parked$\\
+\indent 9. $ parked\xrightarrow {\text { unforeseen ~event/hazard~signal~turned~on}} panic$\\
+\indent 10. $ cruise\xrightarrow {\text {check~destination[hasArrivedToDestination is true]/engine ~idle}} parked$\\
+\indent 11. $ panic \xrightarrow {\text { parked~ signal/hazard~off}} parked$\\
+\indent 12. $ cruise\xrightarrow {\text { manual~ signal}} manual$\\
+\indent 13. $ parked\xrightarrow {\text { shut~off~engine}} system~idle$\\
+
+
+\noindent The UML state diagram is shown in Figure 1.
 
 \newpage
 
+\section{Manual mode}
+
+\noindent The EFSM of the manual mode is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
+
+\noindent $Q = \{manual, brake\}$\\
+\noindent $\Sigma_1 = \{accelerate~signal, decelerate~signal, brake~signal\}$\\
+\noindent $\Sigma_2 = \{accelerate, decelerate\}$\\
+\noindent $q_0: manual$\\
+\noindent $V: speed: \mathbb{R+} $\\
+\noindent $\Lambda$: Transition specifications\\
+\indent 1. $\rightarrow manual$\\
+\indent 2. $manual \xrightarrow {\text { accelerate signal / accelerate}} manual$\\
+\indent 3. $manual \xrightarrow {\text { decelerate signal / decelerate}} manual$\\
+\indent 4. $manual \xrightarrow {\text { brake signal / speed = 0}} brake$\\
+\indent 5. $brake \xrightarrow {\text { accelerate signal / accelerate}} manual$\\
+
+
+\noindent The UML state diagram is shown in Figure 2.
+
+\newpage
 \section{Cruise}
-\subsection{Cruise - Maintaining desired speed}
+\subsection{Maintaining desired speed}
 
 \noindent The EFSM of the cruise (maintaining desired speed) ( is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
@@ -46,45 +79,115 @@ Assignment 2 on Extended Finite State Machines}
 \noindent $\Sigma_1 = \{accelerate~signal,~decelerate~signal,~ verify~current\}$\\
 \noindent $\Sigma_2 = \{accelerate,~decelerate,~maintain~current~speed\}$\\
 \noindent $q_0: initial~speed$\\
-\noindent $V: default~speed: \mathbb R, current~speed: \mathbb R$\\
+\noindent $V: default~speed: \mathbb R+, current~speed: \mathbb R+$\\
 \noindent $\Lambda$: Transition specifications\\
 \indent 1. $\rightarrow initial~speed$\\
-\indent 2. $initial~speed \xrightarrow {\text { accelerate signal [current speed < default speed - 5\% of default speed]}~/ ~accelerate} accelerating$\\
-\indent 3. $initial~speed \xrightarrow {\text { decelerate signal [current speed > default speed + 5\% of default speed]}~/ ~decelerate} decelerating$\\
-\indent 4. $initial~speed \xrightarrow {\text { verify current speed [default speed - 5\% of default speed < current speed < default speed + 5\% of default speed}~/~maintain~current~speed} optimal speed$\\
-\indent 5. $accelerate \xrightarrow {\text { verify current speed [default speed - 5\% of default speed < default speed + 5\% of default speed}~/~maintain~current~speed} optimal speed$\\
-\indent 6. $decelerate \xrightarrow {\text { verify current speed [default speed - 5\% of default speed < default speed + 5\% of default speed}~/~maintain~current~speed} optimal speed$\\
+\indent 2. $initial~speed \xrightarrow {\text { accelerate signal [current speed \textless~default speed - 5\% of default speed]}~/ ~accelerate} accelerating$\\
+\indent 3. $initial~speed \xrightarrow {\text { decelerate signal [current speed \textgreater~default speed + 5\% of default speed]}~/ ~decelerate} decelerating$\\
+\indent 4. $initial~speed \xrightarrow {\text { verify current speed [95\% of default speed \textless~current speed \textless~105\% of default speed}~/~maintain~current~speed} optimal speed$\\
+\indent 5. $accelerate \xrightarrow {\text { verify current speed [95\% of default speed \textless~105\% of default speed}~/~maintain~current~speed} optimal speed$\\
+\indent 6. $decelerate \xrightarrow {\text { verify current speed [95\% of default speed \textless~105\% of default speed}~/~maintain~current~speed} optimal~speed$\\
 
 
-\noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
+\noindent The UML state diagram is shown in Figure 3.
+
 \newpage
 
-\subsection{Cruise - Avoiding obstacles}
+\subsection{Avoiding obstacles}
 
 \noindent The EFSM of the cruise (avoiding obstacles) ( is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
 \noindent $Q = \{cruising,~changing~lane,~tailing\}$\\
-\noindent $\Sigma_1 = \{verify~distance~from~obstacle\}$\\
-\noindent $\Sigma_2 = \{maintain~speed,~reduce~speed,~change~one lane~to~the~left\}$\\
+\noindent $\Sigma_1 = \{verify~distance~from~obstacle,~change~lane~signal, ~verify~changing~lane\}$\\
+\noindent $\Sigma_2 = \{maintain~speed,~reduce~speed,~change~lane~ left\}$\\
 \noindent $q_0: cruising$\\
-\noindent $V: threshold~limit: \mathbb R,~distanceFromObstacle:~ \mathbb R,~isObstacledDetected=~\{true, false\},\newline~isObstacleMoving=~\{true,false\},~isSafeDistanceMaintained=~\{true,false\},~isChangingLaneDone=~\{true,false\}$\\
+\noindent $V: threshold~limit: \mathbb R+,~distanceFromObstacle:~ \mathbb R+,~isObstacledDetected=~\{true, false\},\newline~isObstacleMoving=~\{true,false\},~isSafeDistanceMaintained=~\{true,false\},\newline ~isChangeLaneDone=~\{true,false\}$\\
 \noindent $\Lambda$: Transition specifications\\
 \indent 1. $\rightarrow cruising$\\
-\indent 2. $cruising \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle > threshold limit}~/ ~maintain speed} cruising$\\
-\indent 3. $cruising \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle < threshold limit}~/ ~reduce speed} tailing$\\
-\indent 4. $tailing \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle > threshold limit}~/ ~maintain speed} cruising$\\
-\indent 5. $cruising \xrightarrow {\text { change lane signal [isSafeDistanceMaintained = false or isObstacleMoving = false}~/ ~change one lane to the left} changing lane$\\
-\indent 6. $changingLane \xrightarrow {\text { change lane signal [isSafeDistanceMaintained = false or isObstacleMoving = false}~/ ~change one lane to the left} changing lane$\\
+\indent 2. $cruising \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle \textgreater~threshold limit]}~/ ~maintain~ speed} cruising$\\
+\indent 3. $cruising \xrightarrow {\text {verify distance from obstacle [distanceFromObstacle \textless~threshold limit]}~/ ~reduce~ speed} tailing$\\
+\indent 4. $tailing \xrightarrow {\text { verify distance from obstacle [distanceFromObstacle \textgreater~threshold limit]}~/ ~maintain~ speed} cruising$\\
+\indent 5. $cruising \xrightarrow {\text { change lane signal [isSafeDistanceMaintained = false or isObstacleMoving = false]}~/ ~change~lane~left} changing lane$\\
+\indent 6. $changingLane \xrightarrow {\text {verify changing lane [isChangeLaneDone = true]}} cruising$\\
 
 
-\noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
+\noindent The UML state diagram is shown in Figure 4.
 
 \newpage
-\section{UML state diagrams}
+
+\subsection{Navigation mode}
+
+\noindent The EFSM of the navigation mode is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
+
+\noindent $Q = \{cruising, changing lane, turning, destination~ahead, destination~arrived\}$\\
+\noindent $\Sigma_1 = \{turn~left~signal, turn~right~signal, verify~intersection, verify~turn~done\}$\\
+\noindent $\Sigma_2 = \{change~to~left-most~lane, change~to~right-most~lane, turn~left, turn~right, go~straight, signal~destination~ahead, stop\}$\\
+\noindent $q_0: cruising$\\
+\noindent $V: isIntersection = \{true, false\}, isCloseToDestination = \{true, false\}, isDestination = \{true, false\}, isTurnDone = \{true, false\}, isRightMostLane = \{true, false\}$\\
+\noindent $\Lambda$: Transition specifications\\
+\indent 1. $\rightarrow cruising$\\
+\indent 2. $cruising \xrightarrow {\text { turn~left~signal / change~to~left-most~lane}} changing~lane$\\
+\indent 3. $cruising \xrightarrow {\text { turn~right~signal / change~to~right-most~lane}} changing~lane$\\
+\indent 4. $cruising \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~left~signal] / turn~left}} turning$\\
+\indent 5. $cruising \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~right~signal] / turn~right}} turning$\\
+\indent 6. $cruising \xrightarrow {\text { verify~intersection [isCloseToDestination~is~true; isRightMostLane~is~true] / signal~destination~ahead}} destination~ahead$\\
+\indent 7. $changing~lane \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~left~signal] / turn~left}} turning$\\
+\indent 8. $changing~lane \xrightarrow {\text { verify~intersection [isIntersection~is~false] / go~straight}} cruising$\\
+\indent 9. $changing~lane \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~right~signal] / turn right}} turning$\\
+\indent 10. $destination~ahead \xrightarrow {\text { verify~intersection [isDestination~is~true] / stop}} destination~arrived$\\
+\indent 11. $turning \xrightarrow {\text { verify~turn~done [isTurnDone~is~true] / go straight}} cruising$\\
+
+\noindent The UML state diagram is shown in Figure 5.
+
+\newpage
+\subsection{Changing Lane}
+
+\noindent $Q = \{Cruising, ChangingLane, Panic\}$\\
+\noindent $\Sigma_1 = \{MoveLeftSignal, MoveRightSignal, MoveLeft, MoveRight, DangerDetection\}$\\
+\noindent $\Sigma_2 = \{ChangeLane, StayInLane, PanicOn\}$\\
+\noindent $q_0: Cruising$\\
+\noindent $V: Lane = \{Target, NotTarget\}, $ LeftLaneAvail  = \{Open, NotOpen\}, $ RightLaneAvail  = \{Open, NotOpen\}, $ LaneLocation  = \{Left, Right\}, $ ObstacleAhead  = \{True, False\}$\\
+\noindent $\Lambda$: Transition specifications\\
+
+\indent 1. $\rightarrow Cruising$\\
+\indent 2. $Cruising \xrightarrow {\text {MoveLeftSignal [LaneLocation is Left]}} ChangeLane$\\
+\indent 3. $ChangeLane \xrightarrow {\text {MoveLeft [Lane is NotTarget; LeftLaneAvail is Open] / ChangeLane}} ChangeLane$\\
+\indent 4. $ChangeLane \xrightarrow {\text {MoveLeft [Lane is Target; LeftLaneAvail is Open] / ChangeLane}} Cruising$\\
+\indent 5. $ChangeLane \xrightarrow {\text {MoveLeft [LeftLaneAvail  is NotOpen] / StayInLane}} ChangeLane$\\
+\indent 6. $Cruising \xrightarrow {\text { MoveRightSignal [LaneLocation is Right]}} ChangeLane$\\
+\indent 7. $ChangeLane \xrightarrow {\text {MoveRight [Lane is NotTarget; RightLaneAvail is Open] / ChangeLane}} ChangeLane$\\
+\indent 8. $ChangeLane \xrightarrow {\text {MoveRight [Lane is Target; RightLaneAvail is Open] / ChangeLane}} Cruising$\\
+\indent 9. $ChangeLane \xrightarrow {\text {MoveRight [RightLaneAvail is NotOpen] / StayInLane}} ChangeLane$\\
+\indent 10. $Cruising \xrightarrow {\text {DangerDetection [LeftLaneAvail is NotOpen; RightLaneAvail is NotOpen; ObstacleAhead is True] / (PanicModeOn)}} Panic$\\
+
+\noindent The UML state diagram is shown in Figure 6.
+
+\newpage
+
+\section{Panic}
+
+\noindent $Q = \{Default, Panic, Parked\}$\\
+\noindent $\Sigma_1 = \{Panic Signal, UnknownIssueSignal\}$\\
+\noindent $\Sigma_2 = \{hazard signal turned on, break, hazard signal turned off\}$\\
+\noindent $q_0: Default$\\
+\noindent $V: UnsolvableIssue = \{True, False\}, $ PanicState = \{True, False\}\\
+\noindent $\Lambda$: Transition specifications\\
+
+\indent 1. $\rightarrow Default$\\
+\indent 2. $Default \xrightarrow {\text {UnknownIssueSignal [UnsolvableIssue is True] / (break;~hazard~signal~turned on)}} Panic$\\
+\indent 3. $Default \xrightarrow {\text {Panic Signal}} Panic$\\
+\indent 4. $Panic \xrightarrow {\text {Panic Signal [PanicState is True] /(hazard~signal~turned~off)}} Parked$\\
+
+
+\noindent The UML state diagram is shown in Figure 7.
+
+\newpage
+
+\section{UML Diagrams}
 
 \begin{figure}[h!]
 	\centering
-		\includegraphics[width=0.8\textwidth]{./figures/eps/metro.eps}
+		
 		  \caption{Metro.}
   \label{fig:metro-fig}
 \end{figure}
