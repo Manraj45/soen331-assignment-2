@@ -19,19 +19,43 @@ Assignment 2 on Extended Finite State Machines}
 
 \maketitle
 
-\section{Metro passageway formal specification}
+\subsection{Manual mode}
 
-\noindent The EFSM of the metro passageway is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
+\noindent The EFSM of the manual mode is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
-\noindent $Q = \{locked, unlocked\}$\\
-\noindent $\Sigma_1 = \{request~entry, pass\}$\\
-\noindent $\Sigma_2 = \{lock, unlock, beep\}$\\
-\noindent $q_0: locked$\\
-\noindent $V: ticket = \{valid, invalid\}$\\
+\noindent $Q = \{manual, brake\}$\\
+\noindent $\Sigma_1 = \{accelerate~signal, decelerate~signal, brake~signal\}$\\
+\noindent $\Sigma_2 = \{accelerate, decelerate\}$\\
+\noindent $q_0: manual$\\
+\noindent $V: speed: \mathbb{R+} $\\
 \noindent $\Lambda$: Transition specifications\\
-\indent 1. $\rightarrow locked$\\
-\indent 2. $locked \xrightarrow {\text { request entry [ticket is valid] / (unlock ; beep)}} unlocked$\\
-\indent 3. $unlocked \xrightarrow {\text { pass / lock}} locked$\\
+\indent 1. $\rightarrow manual$\\
+\indent 2. $manual \xrightarrow {\text { accelerate signal / accelerate}} manual$\\
+\indent 3. $manual \xrightarrow {\text { decelerate signal / decelerate}} manual$\\
+\indent 4. $manual \xrightarrow {\text { brake signal / speed = 0}} brake$\\
+\indent 5. $brake \xrightarrow {\text { accelerate signal / accelerate}} manual$\\
+
+\subsection{Navigation mode}
+
+\noindent The EFSM of the navigation mode is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
+
+\noindent $Q = \{cruising, changing lane, turning, destination~ahead, destination~arrived\}$\\
+\noindent $\Sigma_1 = \{turn~left~signal, turn~right~signal, verify~intersection, verify~turn~done\}$\\
+\noindent $\Sigma_2 = \{change~to~left-most~lane, change~to~right-most~lane, turn~left, turn~right, go~straight, signal~destination~ahead, stop\}$\\
+\noindent $q_0: cruising$\\
+\noindent $V: isIntersection = \{true, false\}, isCloseToDestination = \{true, false\}, isDestination = \{true, false\}, isTurnDone = \{true, false\}, isRightMostLane = \{true, false\}$\\
+\noindent $\Lambda$: Transition specifications\\
+\indent 1. $\rightarrow cruising$\\
+\indent 2. $cruising \xrightarrow {\text { turn~left~signal / change~to~left-most~lane}} changing~lane$\\
+\indent 3. $cruising \xrightarrow {\text { turn~right~signal / change~to~right-most~lane}} changing~lane$\\
+\indent 4. $cruising \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~left~signal] / turn~left}} turning$\\
+\indent 5. $cruising \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~right~signal] / turn~right}} turning$\\
+\indent 6. $cruising \xrightarrow {\text { verify~intersection [isCloseToDestination~is~true; isRightMostLane~is~true] / signal~destination~ahead}} destination~ahead$\\
+\indent 7. $changing~lane \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~left~signal] / turn~left}} turning$\\
+\indent 8. $changing~lane \xrightarrow {\text { verify~intersection [isIntersection~is~false] / go~straight}} cruising$\\
+\indent 9. $changing~lane \xrightarrow {\text { verify~intersection [isIntersection~is~true; turn~right~signal] / turn right}} turning$\\
+\indent 10. $destination~ahead \xrightarrow {\text { verify~intersection [isDestination~is~true] / stop}} destination~arrived$\\
+\indent 11. $turning \xrightarrow {\text { verify~turn~done [isTurnDone~is~true] / go straight}} cruising$\\
 
 \noindent The UML state diagram is shown in Figure~\ref{fig:metro-fig}.
 
