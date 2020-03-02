@@ -75,7 +75,7 @@ Assignment 2 on Extended Finite State Machines}
 
 \noindent The EFSM of the cruise (maintaining desired speed) ( is the tuple $S = (Q, \Sigma_1, \Sigma_2, q_0, V, \Lambda)$, where\\
 
-\noindent $Q = \{accelerating,~decelerating,~optimal~speed,~initial speed\}$\\
+\noindent $Q = \{accelerating,~decelerating,~optimal~speed,~initial ~speed\}$\\
 \noindent $\Sigma_1 = \{accelerate~signal,~decelerate~signal,~ verify~current\}$\\
 \noindent $\Sigma_2 = \{accelerate,~decelerate,~maintain~current~speed\}$\\
 \noindent $q_0: initial~speed$\\
@@ -85,8 +85,8 @@ Assignment 2 on Extended Finite State Machines}
 \indent 2. $initial~speed \xrightarrow {\text { accelerate signal [current speed \textless~default speed - 5\% of default speed]}~/ ~accelerate} accelerating$\\
 \indent 3. $initial~speed \xrightarrow {\text { decelerate signal [current speed \textgreater~default speed + 5\% of default speed]}~/ ~decelerate} decelerating$\\
 \indent 4. $initial~speed \xrightarrow {\text { verify current speed [95\% of default speed \textless~current speed \textless~105\% of default speed}~/~maintain~current~speed} optimal speed$\\
-\indent 5. $accelerate \xrightarrow {\text { verify current speed [95\% of default speed \textless~105\% of default speed}~/~maintain~current~speed} optimal speed$\\
-\indent 6. $decelerate \xrightarrow {\text { verify current speed [95\% of default speed \textless~105\% of default speed}~/~maintain~current~speed} optimal~speed$\\
+\indent 5. $accelerating \xrightarrow {\text { verify current speed [95\% of default speed \textless~105\% of default speed}~/~maintain~current~speed} optimal~speed$\\
+\indent 6. $decelerating \xrightarrow {\text { verify current speed [95\% of default speed \textless~105\% of default speed}~/~maintain~current~speed} optimal~speed$\\
 
 
 \noindent The UML state diagram is shown in Figure 3.
